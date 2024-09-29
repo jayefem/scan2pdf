@@ -4,6 +4,22 @@ This simple Python script converts scanned image files in a directory. It is a w
 support duplex scan. Therefore, the first half of images are assumed as all frontpages. The second half of the images are
 are assumed as all backpages. The backpages are in reverse order.
 
+Suppose, you have the following files scanned:
+```
+CCF28092024_00000.png (front page of first page)
+CCF28092024_00001.png (front page of second page)
+CCF28092024_00002.png (back page of first page)
+CCF28092024_00003.png (back page of second page)
+```
+
+The script will convert the images to PDF in the following order:
+```
+CCF28092024_00000.png
+CCF28092024_00003.png
+CCF28092024_00001.png
+CCF28092024_00002.png
+```
+
 Note: It was only tested with files by a Brother scanner having the format "CCF28092024_00000.png" etc.
 
 ## How to run
