@@ -1,8 +1,7 @@
 # Scan2Pdf
 
 This simple Python script converts scanned image files in a directory. It is a workaround for scanners which do not 
-support duplex scan. Therefore, the first half of images are assumed as all frontpages. The second half of the images are
-are assumed as all backpages. The backpages are in reverse order.
+support duplex scan. Assumption: All front pages were scanned first, then all back pages were scanned (in reverse order).
 
 Suppose, you have the following files scanned:
 ```
@@ -68,7 +67,7 @@ options:
   --noFakeDuplexScan    If set, it is assumed, that only front pages were
                         scanned. If not set, the script assumes a fake duplex
                         scan. Assumption: All front pages were scanned first,
-                        then all backpages were scanned (in reverse order).
+                        then all back pages were scanned (in reverse order).
 ```
 
 ## Development details

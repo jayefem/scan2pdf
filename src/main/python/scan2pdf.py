@@ -42,7 +42,7 @@ class Scan2Pdf:
                             action="store_false",
                             help='If set, it is assumed, that only front pages were scanned. '
                                  'If not set, the script assumes a fake duplex scan. Assumption: All front pages were scanned '
-                                 'first, then all backpages were scanned (in reverse order).')
+                                 'first, then all back pages were scanned (in reverse order).')
         args = parser.parse_args()
 
         if args.input_path == None:
