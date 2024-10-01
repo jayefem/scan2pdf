@@ -7,8 +7,8 @@ Suppose, you have the following files scanned:
 ```
 CCF28092024_00000.png (front page of first page)
 CCF28092024_00001.png (front page of second page)
-CCF28092024_00002.png (back page of first page)
-CCF28092024_00003.png (back page of second page)
+CCF28092024_00002.png (back page of second page)
+CCF28092024_00003.png (back page of first page)
 ```
 
 The script will convert the images to PDF in the following order:
