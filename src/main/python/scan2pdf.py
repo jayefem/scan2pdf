@@ -29,47 +29,52 @@ class Scan2Pdf:
         logging.getLogger('matplotlib.pyplot').setLevel(logging.WARNING)
         logging.getLogger("PIL.PngImagePlugin").setLevel(logging.WARNING)
 
-    def parseArgs(self):
-        global args
-        global input_path
+        self.args = None
+        self.input_path = None
 
+    def parseArgs(self):
         parser = argparse.ArgumentParser()
         parser.add_argument('--inputPath', dest='input_path', type=str, help='Path to the scanned image files.')
         parser.add_argument('--imagePrefix', dest='image_prefix', type=str, default=DEFAULT_BROTHER_IMAGE_PREFIX, help='Prefix of scanned image files. Default: ' + DEFAULT_BROTHER_IMAGE_PREFIX)
         parser.add_argument('--imageExt', dest='image_ext', type=str,
                             default=DEFAULT_BROTHER_IMAGE_EXT, help='Extension of scanned image files. Default: ' + DEFAULT_BROTHER_IMAGE_EXT)
-        parser.add_argument('--noFakeDuplexScan', dest='is_no_fake_duplex_scan',
-                            action="store_false",
-                            help='If set, it is assumed, that only front pages were scanned. '
-                                 'If not set, the script assumes a fake duplex scan. Assumption: All front pages were scanned '
-                                 'first, then all back pages were scanned (in reverse order).')
-        args = parser.parse_args()
+        parser.add_argument('--duplexScan', dest='is_duplex_scan',
+                            action="store_true",
+                            help='If set, the script assumes a fake duplex scan. I.e. all front pages were scanned '
+                                 'first, then all back pages were scanned (in reverse order).'
+                                 'If not set, it is assumed, that only front pages were scanned. '
+                            )
+        self.args = parser.parse_args()
 
-        if args.input_path == None:
+        if self.args.input_path == None:
             # Ubuntu
             home = os.getenv("HOME")
             if home is None:
                 # Windows
                 home = Path.home()
-            input_path = os.path.join(home, BROTHER_SCAN_SUBDIRECTORY)
+            self.input_path = os.path.join(home, BROTHER_SCAN_SUBDIRECTORY)
         else:
-            input_path = os.path.abspath(args.input_path)
+            self.input_path = os.path.abspath(self.args.input_path)
 
     def start(self):
         self.parseArgs()
 
-        image_file_names = [f for f in listdir(input_path) if (os.path.isfile(os.path.join(input_path, f)) and f.startswith(args.image_prefix) and f.endswith(args.image_ext))]
+        image_file_names = [f for f in listdir(self.input_path) if (os.path.isfile(os.path.join(self.input_path, f)) and f.startswith(self.args.image_prefix) and f.endswith(self.args.image_ext))]
 
         image_array_length = len(image_file_names)
 
         if image_array_length == 0:
-            print("Could not find any images files with prefix '" + args.image_prefix + "' and extension '" + args.image_ext + "' in the directory '" + input_path + "'. Script aborted.", file=sys.stderr)
+            print("Could not find any images files with prefix '" + self.args.image_prefix + "' and extension '" + self.args.image_ext + "' in the directory '" + self.input_path + "'. Script aborted.", file=sys.stderr)
             exit(1)
 
-        if not args.is_no_fake_duplex_scan:
+        if self.args.is_duplex_scan:
+            print("Assembling duplex scanned files ...")
+
             if image_array_length % 2 != 0:
-                print("There must be an even number of images files in the directory '" + input_path + "' if this is a duplex scan. Found only " + str(image_array_length) + ". Script aborted.", file=sys.stderr)
+                print("There must be an even number of images files in the directory '" + self.input_path + "' if this is a duplex scan. Found only " + str(image_array_length) + ". Script aborted.", file=sys.stderr)
                 exit(1)
+        else:
+            print("Assembling scanned files ... ...")
 
         targetfile_name = "_" + image_file_names[0].split("_", 1)[0]
 
@@ -77,12 +82,12 @@ class Scan2Pdf:
             print("Could not determine a target PDF filename. There must be a '_' in the png file names. Script aborted.", file=sys.stderr)
             exit(1)
 
-        targetfilepath = os.path.join(input_path, targetfile_name) + TARGETFILE_EXT
+        targetfilepath = os.path.join(self.input_path, targetfile_name) + TARGETFILE_EXT
         targetfile = Path(targetfilepath)
         index = 0
         while targetfile.exists():
             index += 1
-            targetfilepath = os.path.join(input_path, targetfile_name) + "_v" + str(index) + TARGETFILE_EXT
+            targetfilepath = os.path.join(self.input_path, targetfile_name) + "_v" + str(index) + TARGETFILE_EXT
             targetfile = Path(targetfilepath)
             if index > 100:
                 break
@@ -95,17 +100,17 @@ class Scan2Pdf:
 
         print("Starting converting to '" + targetfilepath + "'. This can take a while ...")
 
-        if not args.is_no_fake_duplex_scan:
-            scannedfiles = image_file_names
-        else:
+        if self.args.is_duplex_scan:
             half_length = int(image_array_length / 2)
             scannedfiles = [0 for x in range(image_array_length)]
             for i in range(0, half_length):
-                scannedfiles[2*i] = image_file_names[i]
-                scannedfiles[2*i+1] = image_file_names[image_array_length-i-1]
+                scannedfiles[2 * i] = image_file_names[i]
+                scannedfiles[2 * i + 1] = image_file_names[image_array_length - i - 1]
+        else:
+            scannedfiles = image_file_names
 
         images = [
-            Image.open(os.path.join(input_path, f))
+            Image.open(os.path.join(self.input_path, f))
             for f in scannedfiles
         ]
 

@@ -54,8 +54,10 @@ Open the Windows Explorer and double-click '_scan2pdf.bat'.
 ### Usage
 
 ```
+This script will convert all scanned images in a directory to a PDF file.
+
 usage: scan2pdf.py [-h] [--inputPath INPUT_PATH] [--imagePrefix IMAGE_PREFIX]
-                   [--imageExt IMAGE_EXT] [--noFakeDuplexScan]
+                   [--imageExt IMAGE_EXT] [--duplexScan]
 
 options:
   -h, --help            show this help message and exit
@@ -64,10 +66,10 @@ options:
   --imagePrefix IMAGE_PREFIX
                         Prefix of scanned image files. Default: CCF
   --imageExt IMAGE_EXT  Extension of scanned image files. Default: .jpg
-  --noFakeDuplexScan    If set, it is assumed, that only front pages were
-                        scanned. If not set, the script assumes a fake duplex
-                        scan. Assumption: All front pages were scanned first,
-                        then all back pages were scanned (in reverse order).
+  --duplexScan          If set, the script assumes a fake duplex scan. I.e.
+                        all front pages were scanned first, then all back
+                        pages were scanned (in reverse order).If not set, it
+                        is assumed, that only front pages were scanned.
 ```
 
 ## Development details
