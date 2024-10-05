@@ -6,23 +6,23 @@ from pathlib import Path
 _trace_installed = False
 
 
-def initialize(logFilePath: str = ""):
+def initialize(absoluteLogFilePath: str = ""):
     install_trace_logger()
 
     # logging.basicConfig(level=logging.DEBUG)
     # logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', level=logging.DEBUG)
     # logging.basicConfig(format='%(asctime)s %(message)s', filename='waterflowers.log', level=logging.INFO)
 
-    if logFilePath != "" and not logFilePath.endswith("/"):
-        logFilePath = logFilePath + "/"
+    if absoluteLogFilePath != "" and not absoluteLogFilePath.endswith("/"):
+        absoluteLogFilePath = absoluteLogFilePath + "/"
 
-    os.makedirs(Path(logFilePath), exist_ok=True)
+    os.makedirs(Path(absoluteLogFilePath), exist_ok=True)
 
     logging.basicConfig(
         level=logging.DEBUG,
         format="%(asctime)s [%(levelname)s] %(message)s",
         handlers=[
-            logging.handlers.TimedRotatingFileHandler(logFilePath + 'Scan2Pdf.log', when='midnight',
+            logging.handlers.TimedRotatingFileHandler(absoluteLogFilePath + 'scan2pdf.log', when='midnight',
                                                       interval=1, backupCount=3, encoding=None, delay=False, utc=False,
                                                       atTime=None),
             logging.StreamHandler()

@@ -23,7 +23,7 @@ class Scan2Pdf:
     ):
         LOG_FILE_PATH = "../../../logs/"
         # locale.setlocale(locale.LC_ALL, "german")
-        commons.initialize(LOG_FILE_PATH)
+        commons.initialize(os.path.join(os.path.dirname(__file__), LOG_FILE_PATH))
 
         logging.getLogger('matplotlib').setLevel(logging.WARNING)
         logging.getLogger('matplotlib.pyplot').setLevel(logging.WARNING)
